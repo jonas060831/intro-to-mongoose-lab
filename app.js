@@ -57,6 +57,12 @@ const updateUserDetails = async(id, name, age) => {
 
 const showTheListOfUsers = users => users.forEach(user => console.log(`id: ${user.id} -- Name: ${user.name}, Age: ${user.age}`))
 
+//validations
+const patterns = {
+    name: /([A-Z][a-z]{1,15}(?: [A-Z][a-z]{1,15}){1,4})/g,
+    age: /^(1[8-9]|[2-9][0-9]|1[0-4][0-9]|150)$/g
+}
+
 //invoke the connection
 console.log('Connecting to Database...')
 connect()
@@ -74,9 +80,37 @@ connect()
         switch (userChoice) {
             case 1:
                 //console.log('Create a customer')
-                const userName = prompt('What is your name: ')
-                const userAge = prompt('What is your age: ')
-                const newCustomer = await  createCustomer(userName, userAge)
+                // const userName = prompt('What is your name: ')
+                // const userAge = prompt('What is your age: ')
+                // const newCustomer = await  createCustomer(userName, userAge)
+                // console.log(newCustomer)
+
+
+                let name
+                let age
+                let isNewNameValid = false
+                let isNewAgeValid = false
+                while (!isNewNameValid) {
+
+                    name = prompt('What is the customers new name?: ')
+                    isNewNameValid = patterns.name.test(name)
+                    if(!isNewNameValid) console.log('\n**\nERROR:Invalid Name\nFirst Letter should be capital for First and Last Name\nMinimum of 2 characters for first and last Name\nNo Special Characters or Numbers \n**\n')
+                    
+                    if(isNewNameValid) isNewNameValid = true
+                }
+
+                while (!isNewAgeValid) {
+                    age = prompt('What is the customers new age?: ')
+                    isNewAgeValid = patterns.age.test(age)
+
+                    if(!isNewAgeValid) console.log('\n**\nERROR: Invalid Age\nAge must be atleast 18 ~ 150\n**\n')
+
+                    if(isNewAgeValid) isNewAgeValid = true
+                }
+                
+
+                const newCustomer = await createCustomer(name, age)
+
                 console.log(newCustomer)
                 break;
             case 2:
@@ -104,8 +138,29 @@ connect()
                 console.log('\n')
                 const usersIdToUpdate = prompt('Copy and paste the id of the customer you would like to update here: ')
 
-                const newName = prompt('What is the customers new name?: ')
-                const newAge = prompt('What is the customers new age?: ')
+                
+                let newName
+                let newAge
+                let isNameValid = false
+                let isAgeValid = false
+                while (!isNameValid) {
+
+                    newName = prompt('What is the customers new name?: ')
+                    isNameValid = patterns.name.test(newName)
+                    if(!isNameValid) console.log('\n**\nERROR:Invalid Name\nFirst Letter should be capital for First and Last Name\nMinimum of 2 characters for first and last Name\nNo Special Characters or Numbers \n**\n')
+                    
+                    if(isNameValid) isNameValid = true
+                }
+
+                while (!isAgeValid) {
+                    newAge = prompt('What is the customers new age?: ')
+                    isAgeValid = patterns.age.test(newAge)
+
+                    if(!isAgeValid) console.log('\n**\nERROR: Invalid Age\nAge must be atleast 18 ~ 150\n**\n')
+
+                    if(isAgeValid) isAgeValid = true
+                }
+                
 
                 const updatedCustomer = await updateUserDetails(usersIdToUpdate, newName, newAge)
 
